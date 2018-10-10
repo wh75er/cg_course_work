@@ -7,3 +7,7 @@
 * [SigGraph](https://www.youtube.com/results?search_query=siggraph)
 * [Zotero](https://www.zotero.org/)
 * [UmbertoEco](http://urss.ru/cgi-bin/db.pl?lang=Ru&blang=ru&page=Book&id=184562)
+
+Полезные ссылки:
+* [IUS](http://projects.ius.edu.ba/ComputerGraphics/HDR/hdri2014.html)
+* [Cambridge DATASETS](https://www.repository.cam.ac.uk/handle/1810/261766)
