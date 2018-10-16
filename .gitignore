@@ -274,3 +274,5 @@ Prerequisites
 *.exe
 *.out
 *.app
+
+*pro.user
