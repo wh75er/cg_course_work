@@ -2,6 +2,21 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+//#include <QtMultimedia/QCamera>
+#include <QtMultimediaWidgets/QCameraViewfinder>
+#include <QtMultimedia/QCameraInfo>
+#include <QtMultimedia/QMediaRecorder>
+#include <QtMultimedia/QMediaPlayer>
+#include <QtMultimedia/QCameraImageCapture>
+#include <QVBoxLayout>
+#include <QUrl>
+
+#include <iostream>
+
+class QCamera;
+class QCameraViewfinder;
+class QCameraImageCapture;
+class QVBoxLayout;
 
 namespace Ui {
 class MainWindow;
@@ -15,8 +30,15 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_recordBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
+    QCamera *mCamera;
+    QCameraViewfinder *mCameraViewfinder;
+    QCameraImageCapture *mCameraImageCapture;
+    QVBoxLayout *mLayout;
 };
 
 #endif // MAINWINDOW_H

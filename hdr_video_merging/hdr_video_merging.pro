@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets multimedia multimediawidgets
+QTPLUGIN += qavfcamera
 
 TARGET = hdr_video_merging
 TEMPLATE = app

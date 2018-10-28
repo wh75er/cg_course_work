@@ -6,31 +6,74 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>571</width>
-    <height>370</height>
+    <width>677</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QPushButton" name="recordBtn">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>record</string>
+    </property>
+   </widget>
+   <widget class="QScrollArea" name="scrollArea">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>50</y>
+      <width>591</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>589</width>
+       <height>299</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>571</width>
+     <width>677</width>
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuhello_world">
+   <widget class="QMenu" name="menuButton">
     <property name="title">
-     <string>hello world</string>
+     <string>menu</string>
     </property>
+    <addaction name="recordAction"/>
    </widget>
-   <addaction name="menuhello_world"/>
+   <addaction name="menuButton"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="recordAction">
+   <property name="text">
+    <string>Record</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
