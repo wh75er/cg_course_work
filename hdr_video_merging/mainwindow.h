@@ -3,11 +3,6 @@
 
 #include <QMainWindow>
 //#include <QtMultimedia/QCamera>
-#include <QtMultimediaWidgets/QCameraViewfinder>
-#include <QtMultimedia/QCameraInfo>
-#include <QtMultimedia/QMediaRecorder>
-#include <QtMultimedia/QMediaPlayer>
-#include <QtMultimedia/QCameraImageCapture>
 #include <QVBoxLayout>
 #include <QUrl>
 
