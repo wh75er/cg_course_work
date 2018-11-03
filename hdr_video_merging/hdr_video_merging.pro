@@ -25,10 +25,13 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    video.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    video.h \
+    libs.h
 
 FORMS += \
         mainwindow.ui
