@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-#include <iostream>
+#include "libs.h"
+#include "video.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,8 +17,12 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    Video* video;
+    string* filename;
+
 private slots:
-    void on_recordBtn_clicked();
+    void on_convertBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
