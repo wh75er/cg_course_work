@@ -10,7 +10,6 @@ Video::Video(string* path)
 Video::~Video()
 {
     delete this->cap;
-    this->cap->release();
 }
 
 
