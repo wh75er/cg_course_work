@@ -18,7 +18,6 @@ public:
     ~MainWindow();
 
 protected:
-    Video* video;
     string* filename;
 
 private slots:
