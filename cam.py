@@ -12,9 +12,7 @@ cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
 cap.set(3, 640)
 cap.set(4, 480)
 
-for i in range(20): 
-    ret, frame = cap.read()
-
+count = 0
 exposureChanger = False
 
 while(True): 
@@ -27,10 +25,13 @@ while(True):
 
     time.sleep(.400)
     ret, frame = cap.read()
-    cv2.imshow('Video', frame)
-    out.write(frame)
+    if count > 10:
+        cv2.imshow('Video', frame)
+        out.write(frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+    count += 1
 
 cap.release()
 out.release()
