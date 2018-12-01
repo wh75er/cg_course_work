@@ -12,7 +12,8 @@ cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
 cap.set(3, 640)
 cap.set(4, 480)
 
-for i in range(20): ret, frame = cap.read()
+for i in range(20): 
+    ret, frame = cap.read()
 
 exposureChanger = False
 
