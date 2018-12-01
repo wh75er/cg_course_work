@@ -1,27 +1,31 @@
 import numpy as np
 import cv2
+import time
 
-filename = "video.avi"
-frames_per_seconds = 25.0
+filename = "video2.avi"
+frames_per_seconds = 1.0
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), frames_per_seconds, (640, 480))
 
 cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
 cap.set(3, 640)
 cap.set(4, 480)
 
+for i in range(20): ret, frame = cap.read()
+
 exposureChanger = False
 
 while(True): 
-    ret, frame = cap.read()
     if exposureChanger:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.06)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.4)
         exposureChanger = False
     else:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.01)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.1)
         exposureChanger = True
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    time.sleep(.400)
+    ret, frame = cap.read()
     cv2.imshow('Video', frame)
     out.write(frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
