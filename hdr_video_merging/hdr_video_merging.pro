@@ -31,7 +31,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     video.h \
-    libs.h
+    libs.h \
+    hdr.h
 
 FORMS += \
         mainwindow.ui
