@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import time
 
-filename = "video2.avi"
+filename = "video.avi"
 frames_per_seconds = 1.0
 
 cap = cv2.VideoCapture(0)
