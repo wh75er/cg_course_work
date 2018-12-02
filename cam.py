@@ -3,7 +3,7 @@ import cv2
 import time
 
 filename = "video.avi"
-frames_per_seconds = 1.0
+frames_per_seconds = 30.0
 
 cap = cv2.VideoCapture(0)
 out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), frames_per_seconds, (640, 480))
@@ -23,7 +23,7 @@ while(True):
         cap.set(cv2.CAP_PROP_EXPOSURE, 0.1)
         exposureChanger = True
 
-    time.sleep(.400)
+    #time.sleep(.400)
     ret, frame = cap.read()
     if count > 10:
         cv2.imshow('Video', frame)
