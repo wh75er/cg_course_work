@@ -18,7 +18,8 @@ public:
 
 private:
     string* path;
-    VideoCapture *cap;
+    VideoCapture *hdr_capture;
+    VideoCapture *hdr_tonemaped_capture;
 };
 
 #endif // HDR_H
