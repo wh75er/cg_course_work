@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.2, 2018-12-01T17:25:24. -->
+<!-- Written by QtCreator 4.7.2, 2018-12-02T18:11:16. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -77,7 +77,7 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">QtProjectManager.QMakeBuildStep</value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.LinkQmlDebuggingLibrary">true</value>
-      <value type="QString" key="QtProjectManager.QMakeBuildStep.QMakeArguments">LIBS+=-lopencv_core LIBS+=-lopencv_highgui LIBS+=-lopencv_imgproc LIBS+=-lopencv_videoio</value>
+      <value type="QString" key="QtProjectManager.QMakeBuildStep.QMakeArguments">LIBS+=-lopencv_core LIBS+=-lopencv_highgui LIBS+=-lopencv_imgproc LIBS+=-lopencv_videoio LIBS+=-lopencv_photo</value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.QMakeForced">false</value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.SeparateDebugInfo">false</value>
       <value type="bool" key="QtProjectManager.QMakeBuildStep.UseQtQuickCompiler">false</value>

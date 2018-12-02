@@ -26,7 +26,8 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    video.cpp
+    video.cpp \
+    hdr.cpp
 
 HEADERS += \
         mainwindow.h \
