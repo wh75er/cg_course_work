@@ -30,17 +30,30 @@ void MainWindow::on_convertBtn_clicked()
     }
     std::cout << "Nah, das ist gut!\n";
 
+    HdrCap* hdrCap = new HdrCap();
+
     bool SET_WATCH_EVERY_FRAME = true;
     int pressed_key;
+    Mat frame, prev_frame;
     for(;;)
     {
-        Mat frame;
         *(video->get_capture()) >> frame;
         if(frame.empty() || (pressed_key = waitKey(30)) == 'q')
             break;
+
         if(pressed_key == 'm')
             SET_WATCH_EVERY_FRAME = true;
+
+
         imshow("frame", frame);
+        if (!(prev_frame.empty())) {
+            imshow("prev_frame", prev_frame);
+            vector<Mat> images = hdrCap->align_frames(prev_frame, frame);
+            imshow("prev_frame_aligned", images[0]);
+            imshow("frame_aligned", images[1]);
+        }
+
+
         if(SET_WATCH_EVERY_FRAME)
             for(;;) {
                 int key = waitKey(30);
@@ -51,9 +64,14 @@ void MainWindow::on_convertBtn_clicked()
                 if(key == 'n')
                     break;
             }
+
+        frame.copyTo(prev_frame);
     }
 
     video->get_capture()->release();
-    cvDestroyWindow("frame");
+    //cvDestroyWindow("frame");
+    //cvDestroyWindow("prev_frame");
+    cvDestroyAllWindows();
     delete video;
+    delete hdrCap;
 }
