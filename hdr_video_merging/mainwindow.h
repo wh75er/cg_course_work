@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "libs.h"
 #include "video.h"
+#include "hdr.h"
 
 namespace Ui {
 class MainWindow;

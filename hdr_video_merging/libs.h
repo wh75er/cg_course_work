@@ -13,6 +13,7 @@
 //#include <opencv2/imgproc/imgproc.hpp>
 //#include <opencv2/videoio.hpp>
 #include <opencv2/video/video.hpp>
+#include <opencv2/photo.hpp>
 
 #include <QString>
 #include <string>
