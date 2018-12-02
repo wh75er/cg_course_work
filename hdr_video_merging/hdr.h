@@ -3,16 +3,22 @@
 
 #include "libs.h"
 
-class Hdr_cap
+class HdrCap
 {
 public:
-    Hdr_cap();
-    ~Hdr_cap();
+    HdrCap();
+    ~HdrCap();
 
-    bool align_frames();
-    bool deghost_frames();
-    bool merge_frames();
-    bool tonemap_frames();
+    vector<Mat> align_frames(Mat &img1, Mat &img2);
+    int deghost_frames();
+    int merge_frames();
+    int tonemap_frames();
+
+    bool add_frame();
+
+private:
+    string* path;
+    VideoCapture *cap;
 };
 
 #endif // HDR_H
