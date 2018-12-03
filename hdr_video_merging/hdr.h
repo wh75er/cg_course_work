@@ -11,7 +11,7 @@ public:
 
     vector<Mat> align_frames(Mat &img1, Mat &img2);
     int deghost_frames();
-    int merge_frames();
+    Mat merge_frames(Mat &img1, Mat &img2);
     int tonemap_frames();
 
     bool add_frame();

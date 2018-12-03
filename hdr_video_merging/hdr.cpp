@@ -27,3 +27,17 @@ vector<Mat> HdrCap::align_frames(Mat &img1, Mat &img2)
 
     return images;
 }
+
+Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
+{
+    vector<Mat> images;
+    images.push_back(img1);
+    images.push_back(img2);
+
+    Ptr<MergeMertens> merge_mertens = createMergeMertens();
+
+    Mat result;
+    merge_mertens->process(images, result);
+
+    return result;
+}
