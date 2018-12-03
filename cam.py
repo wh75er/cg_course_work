@@ -4,13 +4,18 @@ import time
 
 filename = "video.avi"
 frames_per_seconds = 30.0
+res480p = {'width':640, 'height':480}
+res720p = {'width':1280, 'height':720}
+width = res480p['width']
+height = res480p['height']
 
 cap = cv2.VideoCapture(0)
-out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), frames_per_seconds, (640, 480))
+out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), frames_per_seconds, 
+                        (width, height))
 
 cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
-cap.set(3, 640)
-cap.set(4, 480)
+cap.set(3, width)
+cap.set(4, height)
 
 count = 0
 exposureChanger = False
