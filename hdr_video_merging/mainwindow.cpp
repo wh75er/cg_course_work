@@ -51,6 +51,8 @@ void MainWindow::on_convertBtn_clicked()
             vector<Mat> images = hdrCap->align_frames(prev_frame, frame);
             imshow("prev_frame_aligned", images[0]);
             imshow("frame_aligned", images[1]);
+            Mat hdr_frame = hdrCap->merge_frames(images[0], images[1]);
+            imshow("hdr_frame", hdr_frame);
         }
 
 
