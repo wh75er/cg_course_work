@@ -22,13 +22,13 @@ exposureChanger = False
 
 while(True): 
     if exposureChanger:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.4)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.8)
         exposureChanger = False
     else:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.1)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.09)
         exposureChanger = True
 
-    #time.sleep(.400)
+    time.sleep(.100)
     ret, frame = cap.read()
     if count > 10:
         cv2.imshow('Video', frame)
