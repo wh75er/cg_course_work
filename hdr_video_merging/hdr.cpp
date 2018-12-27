@@ -61,6 +61,7 @@ vector<Mat> HdrCap::computeBitmaps(Mat &img)
     vector<Mat> bitmaps;
     Mat tb, eb;
     tb.create(img.size(), CV_8U);
+    eb.create(img.size(), CV_8U);
 
     int median = getMedian(img);
 
