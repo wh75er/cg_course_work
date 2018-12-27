@@ -48,9 +48,13 @@ void MainWindow::on_convertBtn_clicked()
         imshow("frame", frame);
         if (!(prev_frame.empty())) {
             imshow("prev_frame", prev_frame);
+
             vector<Mat> images = hdrCap->align_frames(prev_frame, frame);
             imshow("prev_frame_aligned", images[0]);
             imshow("frame_aligned", images[1]);
+
+            int deghost = hdrCap->deghost_frames(prev_frame, frame);
+
             Mat hdr_frame = hdrCap->merge_frames(images[0], images[1]);
             imshow("hdr_frame", hdr_frame);
         }
