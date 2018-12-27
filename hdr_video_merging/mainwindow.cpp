@@ -53,7 +53,8 @@ void MainWindow::on_convertBtn_clicked()
             imshow("prev_frame_aligned", images[0]);
             imshow("frame_aligned", images[1]);
 
-            int deghost = hdrCap->deghost_frames(prev_frame, frame);
+            Mat tb = hdrCap->deghost_frames(images[0], images[1]);
+            imshow("Bitmap threshold", tb);
 
             Mat hdr_frame = hdrCap->merge_frames(images[0], images[1]);
             imshow("hdr_frame", hdr_frame);

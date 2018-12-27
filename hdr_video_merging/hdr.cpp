@@ -28,13 +28,18 @@ vector<Mat> HdrCap::align_frames(Mat &img1, Mat &img2)
     return images;
 }
 
-int HdrCap::deghost_frames(Mat &img1, Mat &img2)
+Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 {
-    unsigned char *p = img2.ptr();
-    cout << img1.channels() << "\n";
-    cout << "Blue chanel: " << int(p[0]) << "\n";
+    //unsigned char *p = img2.ptr();
+    //cout << img1.channels() << "\n";
+    //cout << "Blue chanel: " << int(p[0]) << "\n";
+    Mat gray;
+    cvtColor(img1, gray, COLOR_RGB2GRAY);
+    vector<Mat> bitmaps = computeBitmaps(gray);
+    unsigned char *p = bitmaps[0].ptr();
+    cout << int(p[0]) << " " << int(p[1]) << " " << int(p[2]) << "\n";
 
-    return 0;
+    return bitmaps[0];
 }
 
 Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
@@ -51,16 +56,20 @@ Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
     return result;
 }
 
-Mat HdrCap::computeBitmap(Mat &img)
+vector<Mat> HdrCap::computeBitmaps(Mat &img)
 {
-    Mat tb;
+    vector<Mat> bitmaps;
+    Mat tb, eb;
     tb.create(img.size(), CV_8U);
 
     int median = getMedian(img);
 
     compare(img, median, tb, CMP_GT);
+    compare(abs(img-median), exclude_range, eb, CMP_GT);
+    bitmaps.push_back(tb);
+    bitmaps.push_back(eb);
 
-    return tb;
+    return bitmaps;
 }
 
 int HdrCap::getMedian(Mat &img)

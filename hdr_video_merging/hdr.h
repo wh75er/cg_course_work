@@ -10,14 +10,15 @@ public:
     ~HdrCap();
 
     vector<Mat> align_frames(Mat &img1, Mat &img2);
-    int deghost_frames(Mat &img1, Mat &img2);
+    Mat deghost_frames(Mat &img1, Mat &img2);
     Mat merge_frames(Mat &img1, Mat &img2);
     int tonemap_frames();
 
     bool add_frame();
 
 protected:
-    Mat computeBitmap(Mat &img);
+    int exclude_range = 4;
+    vector<Mat> computeBitmaps(Mat &img);
     int getMedian(Mat &img);
 
 private:
