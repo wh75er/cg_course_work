@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/video/video.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -14,6 +14,7 @@
 //#include <opencv2/videoio.hpp>
 #include <opencv2/video/video.hpp>
 #include <opencv2/photo.hpp>
+#include <opencv2/highgui/highgui_c.h>
 
 #include <QString>
 #include <string>
