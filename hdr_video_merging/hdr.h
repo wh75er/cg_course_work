@@ -18,8 +18,10 @@ public:
 
 protected:
     int exclude_range = 4;
-    vector<Mat> computeBitmaps(Mat &img);
+    Mat computeBitmap(Mat &img);
     int getMedian(Mat &img);
+
+    Mat getMotionMap(Mat &tb1, Mat &tb2);
 
 private:
     string* path;

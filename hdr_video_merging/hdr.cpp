@@ -30,16 +30,16 @@ vector<Mat> HdrCap::align_frames(Mat &img1, Mat &img2)
 
 Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 {
-    //unsigned char *p = img2.ptr();
-    //cout << img1.channels() << "\n";
-    //cout << "Blue chanel: " << int(p[0]) << "\n";
-    Mat gray;
-    cvtColor(img1, gray, COLOR_RGB2GRAY);
-    vector<Mat> bitmaps = computeBitmaps(gray);
-    unsigned char *p = bitmaps[0].ptr();
-    cout << int(p[0]) << " " << int(p[1]) << " " << int(p[2]) << "\n";
+    Mat grayscale1, grayscale2;
+    cvtColor(img1, grayscale1, COLOR_RGB2GRAY);
+    cvtColor(img2, grayscale2, COLOR_RGB2GRAY);
 
-    return bitmaps[0];
+    Mat tb1 = computeBitmap(grayscale1);
+    Mat tb2 = computeBitmap(grayscale2);
+
+    Mat motionMap = getMotionMap(tb1, tb2);
+
+    return tb1;
 }
 
 Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
@@ -56,21 +56,16 @@ Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
     return result;
 }
 
-vector<Mat> HdrCap::computeBitmaps(Mat &img)
+Mat HdrCap::computeBitmap(Mat &img)
 {
-    vector<Mat> bitmaps;
-    Mat tb, eb;
+    Mat tb;
     tb.create(img.size(), CV_8U);
-    eb.create(img.size(), CV_8U);
 
     int median = getMedian(img);
 
     compare(img, median, tb, CMP_GT);
-    compare(abs(img-median), exclude_range, eb, CMP_GT);
-    bitmaps.push_back(tb);
-    bitmaps.push_back(eb);
 
-    return bitmaps;
+    return tb;
 }
 
 int HdrCap::getMedian(Mat &img)
@@ -90,4 +85,24 @@ int HdrCap::getMedian(Mat &img)
     }
 
     return median;
+}
+
+Mat HdrCap::getMotionMap(Mat &tb1, Mat &tb2)
+{
+    // Add bitmaps to get motionMap
+    //	0 and 2 - pixel is static, 1 - otherwise
+    Mat motionMap = Mat(tb1.rows, tb1.cols, CV_8U);
+
+    for(int i = 0; i < motionMap.rows; i++) {
+        uchar *mp = motionMap.ptr(i),
+            *tbp1 = tb1.ptr(i),
+            *tbp2 = tb2.ptr(i);
+        for(int j = 0; j < motionMap.cols; j++) {
+            int a = (int(tbp1[j]) == 255) ? 1 : 0;
+            int b = (int(tbp2[j]) == 255) ? 1 : 0;
+            mp[j] = uchar(a + b);
+        }
+    }
+
+    return motionMap;
 }
