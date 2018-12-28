@@ -22,6 +22,7 @@ protected:
     int getMedian(Mat &img);
 
     Mat getMotionMap(Mat &tb1, Mat &tb2);
+    Mat morphOpening(Mat &src);
 
 private:
     string* path;

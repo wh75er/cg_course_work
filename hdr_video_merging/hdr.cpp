@@ -39,7 +39,7 @@ Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 
     Mat motionMap = getMotionMap(tb1, tb2);
 
-    return tb1;
+    return motionMap;
 }
 
 Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
@@ -100,9 +100,19 @@ Mat HdrCap::getMotionMap(Mat &tb1, Mat &tb2)
         for(int j = 0; j < motionMap.cols; j++) {
             int a = (int(tbp1[j]) == 255) ? 1 : 0;
             int b = (int(tbp2[j]) == 255) ? 1 : 0;
-            mp[j] = uchar(a + b);
+            mp[j] = uchar(50*(a + b));			// 50* only for testing purposes!
         }
     }
 
+    Mat temp = morphOpening(motionMap);
+
     return motionMap;
+}
+
+Mat HdrCap::morphOpening(Mat &src)
+{
+    Mat	structElement = Mat(3, 3, CV_8U, Scalar(1));
+    cout << "M = "<< endl << " "  << structElement << endl << endl;
+
+    return structElement;
 }
