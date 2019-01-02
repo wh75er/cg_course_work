@@ -100,13 +100,13 @@ Mat HdrCap::getMotionMap(Mat &tb1, Mat &tb2)
         for(int j = 0; j < motionMap.cols; j++) {
             int a = (int(tbp1[j]) == 255) ? 1 : 0;
             int b = (int(tbp2[j]) == 255) ? 1 : 0;
-            mp[j] = uchar(50*(a + b));			// 50* only for testing purposes!
+            mp[j] = uchar(a + b);
         }
     }
 
     Mat temp = morphOpening(motionMap);
 
-    return motionMap;
+    return temp;
 }
 
 Mat HdrCap::morphOpening(Mat &src)
@@ -114,5 +114,59 @@ Mat HdrCap::morphOpening(Mat &src)
     Mat	structElement = Mat(3, 3, CV_8U, Scalar(1));
     cout << "M = "<< endl << " "  << structElement << endl << endl;
 
-    return structElement;
+    Mat erosed = erosion(src, structElement);
+
+    return erosed;
+}
+
+Mat HdrCap::erosion(Mat &img, Mat &kernel)
+{
+    Mat erased = Mat(img.rows, img.cols, CV_8U, Scalar(0));
+    size_t src_i = size_t(kernel.rows/2);
+    size_t src_j = size_t(kernel.cols/2);
+
+    uchar *ersd = erased.data;
+    size_t ersd_step = erased.step1();
+
+    for(size_t i = src_i; i < size_t(img.rows)-src_i; i++) {
+        for(size_t j = src_j; j < size_t(img.cols)-src_j; j++) {
+            if(checkPattern(img, kernel, i, j) == true)
+                ersd[i*ersd_step + j] = 0;
+            else
+                ersd[i*ersd_step + j] = 255;
+        }
+    }
+
+    return erased;
+}
+
+Mat HdrCap::dilation(Mat &img, Mat &kernel)
+{
+    Mat extended = Mat(img.rows, img.cols, CV_8U);
+
+    return extended;
+
+}
+
+bool HdrCap::checkPattern(Mat &img, Mat &kernel, size_t img_i, size_t img_j)
+{
+    uchar *core = kernel.data,
+          *row = img.data;
+    size_t core_step = kernel.step1(),
+           row_step = img.step1(),
+           core_i = 0,
+           core_j = 0;
+    bool result = true;
+
+    for(size_t i = img_i-1; i < img_i+1; i++) {
+        core_j = 0;
+        for(size_t j = img_j-1; j < img_j+1; j++) {
+            if(core[core_i*core_step+core_j] != row[i*row_step+j])
+                result = false;
+            core_j++;
+        }
+        core_i++;
+    }
+
+    return result;
 }

@@ -22,7 +22,11 @@ protected:
     int getMedian(Mat &img);
 
     Mat getMotionMap(Mat &tb1, Mat &tb2);
+
     Mat morphOpening(Mat &src);
+    Mat erosion(Mat &img, Mat &kernel);
+    Mat dilation(Mat &img, Mat &kernel);
+    bool checkPattern(Mat &img, Mat &kernel, size_t img_i, size_t img_j);
 
 private:
     string* path;
