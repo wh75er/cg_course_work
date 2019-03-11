@@ -23,10 +23,13 @@ protected:
 
     Mat getMotionMap(Mat &tb1, Mat &tb2);
 
-    Mat morphOpening(Mat &src);
+    Mat morphClosing(Mat &src);
     Mat erosion(Mat &img, Mat &kernel);
     Mat dilation(Mat &img, Mat &kernel);
-    bool checkPattern(Mat &img, Mat &kernel, size_t img_i, size_t img_j);
+    bool checkPattern(Mat &img, Mat &kernel, size_t img_i, size_t img_j, int option);
+
+    Mat imgToShowTransform(Mat &img);
+    Mat imgToBitmapTransform(Mat &img);
 
 private:
     string* path;

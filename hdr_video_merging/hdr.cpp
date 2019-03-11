@@ -14,25 +14,21 @@ vector<Mat> HdrCap::align_frames(Mat &img1, Mat &img2)
     images.push_back(img1);
     images.push_back(img2);
 
-    std::cout << img1.cols << 'x' << img1.rows << '\n';
-    std::cout << img2.cols << 'x' << img2.rows << '\n';
-
     Ptr<AlignMTB> alignMTB = createAlignMTB();
     alignMTB->process(images, images);
-
-    std::cout << images[0].cols << 'x' << images[0].rows << '\n';
-    std::cout << images[1].cols << 'x' << images[1].rows << '\n';
-
-    std::cout << '\n';
 
     return images;
 }
 
 Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 {
+    Mat img1_g, img2_g;
+    GaussianBlur(img1, img1_g, Size(23, 23), 0, 0);
+    GaussianBlur(img2, img2_g, Size(23, 23), 0, 0);
+
     Mat grayscale1, grayscale2;
-    cvtColor(img1, grayscale1, COLOR_RGB2GRAY);
-    cvtColor(img2, grayscale2, COLOR_RGB2GRAY);
+    cvtColor(img1_g, grayscale1, COLOR_RGB2GRAY);
+    cvtColor(img2_g, grayscale2, COLOR_RGB2GRAY);
 
     Mat tb1 = computeBitmap(grayscale1);
     Mat tb2 = computeBitmap(grayscale2);
@@ -91,6 +87,7 @@ Mat HdrCap::getMotionMap(Mat &tb1, Mat &tb2)
 {
     // Add bitmaps to get motionMap
     //	0 and 2 - pixel is static, 1 - otherwise
+
     Mat motionMap = Mat(tb1.rows, tb1.cols, CV_8U);
 
     for(int i = 0; i < motionMap.rows; i++) {
@@ -104,69 +101,35 @@ Mat HdrCap::getMotionMap(Mat &tb1, Mat &tb2)
         }
     }
 
-    Mat temp = morphOpening(motionMap);
-
-    return temp;
+    return imgToShowTransform(motionMap);
 }
 
-Mat HdrCap::morphOpening(Mat &src)
+Mat imgToBitmapTransform(Mat &img)
 {
-    Mat	structElement = Mat(3, 3, CV_8U, Scalar(1));
-    cout << "M = "<< endl << " "  << structElement << endl << endl;
+    Mat transformed = Mat(img.rows, img.cols, CV_8U);
 
-    Mat erosed = erosion(src, structElement);
-
-    return erosed;
-}
-
-Mat HdrCap::erosion(Mat &img, Mat &kernel)
-{
-    Mat erased = Mat(img.rows, img.cols, CV_8U, Scalar(0));
-    size_t src_i = size_t(kernel.rows/2);
-    size_t src_j = size_t(kernel.cols/2);
-
-    uchar *ersd = erased.data;
-    size_t ersd_step = erased.step1();
-
-    for(size_t i = src_i; i < size_t(img.rows)-src_i; i++) {
-        for(size_t j = src_j; j < size_t(img.cols)-src_j; j++) {
-            if(checkPattern(img, kernel, i, j) == true)
-                ersd[i*ersd_step + j] = 0;
-            else
-                ersd[i*ersd_step + j] = 255;
+    for(int i = 0; i < transformed.rows; i++) {
+        uchar *mp = transformed.ptr(i),
+            *imgp = img.ptr(i);
+        for(int j = 0; j < transformed.cols; j++) {
+            mp[j] = (int(imgp[j]) == 255) ? 1 : 0;
         }
     }
 
-    return erased;
+    return transformed;
 }
 
-Mat HdrCap::dilation(Mat &img, Mat &kernel)
+Mat HdrCap::imgToShowTransform(Mat &img)
 {
-    Mat extended = Mat(img.rows, img.cols, CV_8U);
+    Mat transformed = Mat(img.rows, img.cols, CV_8U);
 
-    return extended;
-
-}
-
-bool HdrCap::checkPattern(Mat &img, Mat &kernel, size_t img_i, size_t img_j)
-{
-    uchar *core = kernel.data,
-          *row = img.data;
-    size_t core_step = kernel.step1(),
-           row_step = img.step1(),
-           core_i = 0,
-           core_j = 0;
-    bool result = true;
-
-    for(size_t i = img_i-1; i < img_i+1; i++) {
-        core_j = 0;
-        for(size_t j = img_j-1; j < img_j+1; j++) {
-            if(core[core_i*core_step+core_j] != row[i*row_step+j])
-                result = false;
-            core_j++;
+    for(int i = 0; i < transformed.rows; i++) {
+        uchar *mp = transformed.ptr(i),
+            *imgp = img.ptr(i);
+        for(int j = 0; j < transformed.cols; j++) {
+            mp[j] = (int(imgp[j]) == 1) ? 255 : 0;
         }
-        core_i++;
     }
 
-    return result;
+    return transformed;
 }
