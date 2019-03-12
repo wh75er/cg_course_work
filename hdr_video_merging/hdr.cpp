@@ -23,8 +23,8 @@ vector<Mat> HdrCap::align_frames(Mat &img1, Mat &img2)
 Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 {
     Mat img1_g, img2_g;
-    GaussianBlur(img1, img1_g, Size(23, 23), 0, 0);
-    GaussianBlur(img2, img2_g, Size(23, 23), 0, 0);
+    GaussianBlur(img1, img1_g, Size(21, 21), 0, 0);
+    GaussianBlur(img2, img2_g, Size(21, 21), 0, 0);
 
     Mat grayscale1, grayscale2;
     cvtColor(img1_g, grayscale1, COLOR_RGB2GRAY);
@@ -35,7 +35,12 @@ Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 
     Mat motionMap = getMotionMap(tb1, tb2);
 
-    return motionMap;
+    Mat labeledComponents;
+    int nLabels = connectedComponents(motionMap, labeledComponents);
+
+    Mat coloredLabel = colorLabeled(labeledComponents, nLabels);
+
+    return coloredLabel;
 }
 
 Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
@@ -98,10 +103,11 @@ Mat HdrCap::getMotionMap(Mat &tb1, Mat &tb2)
             int a = (int(tbp1[j]) == 255) ? 1 : 0;
             int b = (int(tbp2[j]) == 255) ? 1 : 0;
             mp[j] = uchar(a + b);
+            mp[j] = (mp[j] == 1) ? 255 : 0;
         }
     }
 
-    return imgToShowTransform(motionMap);
+    return motionMap;
 }
 
 Mat imgToBitmapTransform(Mat &img)
@@ -132,4 +138,23 @@ Mat HdrCap::imgToShowTransform(Mat &img)
     }
 
     return transformed;
+}
+
+Mat HdrCap::colorLabeled(Mat &labelImage, int nLabels)
+{
+    std::vector<Vec3b> colors(static_cast<size_t>(nLabels));
+    colors[0] = Vec3b(0, 0, 0);//background
+    for(int label = 1; label < nLabels; ++label){
+        colors[static_cast<size_t>(label)] = Vec3b( (rand()&255), (rand()&255), (rand()&255) );
+    }
+    Mat dst(labelImage.size(), CV_8UC3);
+    for(int r = 0; r < dst.rows; ++r){
+        for(int c = 0; c < dst.cols; ++c){
+            int label = labelImage.at<int>(r, c);
+            Vec3b &pixel = dst.at<Vec3b>(r, c);
+            pixel = colors[static_cast<size_t>(label)];
+        }
+    }
+
+    return dst;
 }

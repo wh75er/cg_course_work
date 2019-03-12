@@ -23,6 +23,8 @@ protected:
 
     Mat getMotionMap(Mat &tb1, Mat &tb2);
 
+    Mat colorLabeled(Mat &labelImage, int nLabels);
+
     Mat imgToShowTransform(Mat &img);
     Mat imgToBitmapTransform(Mat &img);
 
