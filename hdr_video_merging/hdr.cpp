@@ -54,6 +54,8 @@ Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
     Mat result;
     merge_mertens->process(images, result);
 
+    std::vector<Mat> weights = getWeights(img1, img2);
+
     return result;
 }
 
@@ -157,4 +159,108 @@ Mat HdrCap::colorLabeled(Mat &labelImage, int nLabels)
     }
 
     return dst;
+}
+
+std::vector<Mat> HdrCap::getWeights(Mat &img1, Mat &img2)
+{
+    Mat weightMap1;
+    Mat weightMap2;
+
+    weightMap1 = getWeightedMap(img1);
+    cout << weightMap1;
+    //weightMap2 = getWeightedMap(img2);
+
+    std::vector<Mat> weights;
+    weights.push_back(weightMap1);
+    weights.push_back(weightMap2);
+
+    return weights;
+}
+
+Mat HdrCap::getWeightedMap(Mat &img)
+{
+    Mat wMap(img.rows, img.cols, CV_32F);
+    double w_c = 1, w_s = 1, w_e = 1;
+
+    Mat grayscale, laplacianDst, absDst;
+    cvtColor(img, grayscale, COLOR_RGB2GRAY);
+
+    Laplacian(grayscale, laplacianDst, CV_32F);
+    //cout << laplacianDst;
+    //absDst = abs(laplacianDst);
+    //cout << "\n\n\n\n\n\n" << absDst;
+
+    double w,
+          w_contrast,
+          w_saturation,
+          w_exposedness,
+          sigma = 0.2;
+    for(int i = 0; i < wMap.rows; i++) {
+        uchar *imgp = img.ptr(i);
+        float *wp = wMap.ptr<float>(i);
+        for(int j = 0; j < wMap.cols; j++) {
+            // contrast
+            w_contrast = pow(abs(laplacianDst.at<float>(i, j)), w_c);
+            w = w_contrast;
+            //cout << "laplacianDst.at<float>(i, j):" << laplacianDst.at<float>(i, j) << "\n";
+            //cout << "abs(laplacianDst.at<float>(i, j)):" << abs(laplacianDst.at<float>(i, j)) << "\n";
+            //cout << "contrast:" << w_contrast << "\n\n";
+
+            // saturation
+            int r = int(imgp[0]);
+            int g = int(imgp[1]);
+            int b = int(imgp[2]);
+//            cout << "red: " << r << "\n";
+//            cout << "green: " << g << "\n";
+//            cout << "blue: " << b << "\n";
+            w_saturation = pow(double(max_channel(r, g, b) - min_channel(r, g, b))/double(max_channel(r, g, b)), w_s);
+            //cout << "w_saturation: " << w_saturation << "\n\n";
+            w *= w_saturation;
+
+
+            // well-exposedness
+            double red_exp = exponential_euclidean(imgp[0], sigma),
+                   green_exp = exponential_euclidean(imgp[1], sigma),
+                   blue_exp = exponential_euclidean(imgp[2], sigma);
+
+            w_exposedness = pow(red_exp * green_exp * blue_exp, w_e);
+            w *= w_exposedness;
+            //cout << "exposedness: " << w_exposedness << "\n";
+
+            //cout << "w: " << w << "\n\n";
+            wp[j] = float(w);
+            //wMap.at<float>(i, j) = 255;//float(w);
+        }
+    }
+
+    return wMap;
+}
+
+double HdrCap::exponential_euclidean(int channel, double sigma)
+{
+    return exp(-pow((double(channel)-0.5),2)/(2*pow(sigma, 2)));
+}
+
+int HdrCap::max_channel(int r, int g, int b)
+{
+    int max = r;
+        if (g > max) {
+            max = g;
+        }
+        if (b > max) {
+            max = b;
+        }
+        return max;
+}
+
+int HdrCap::min_channel(int r, int g, int b)
+{
+    int min = r;
+        if (g < min) {
+            min = g;
+        }
+        if (b < min) {
+            min = b;
+        }
+        return min;
 }

@@ -28,6 +28,12 @@ protected:
     Mat imgToShowTransform(Mat &img);
     Mat imgToBitmapTransform(Mat &img);
 
+    std::vector<Mat> getWeights(Mat &img1, Mat &img2);
+    Mat getWeightedMap(Mat &img);
+    double exponential_euclidean(int channel, double sigma);
+    int max_channel(int r, int g, int b);
+    int min_channel(int r, int g, int b);
+
 private:
     string* path;
     VideoCapture *hdr_capture;

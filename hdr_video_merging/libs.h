@@ -18,6 +18,7 @@
 
 #include <QString>
 #include <string>
+#include <cmath>
 
 using namespace cv;
 using namespace std;
