@@ -30,8 +30,8 @@ protected:
 
     std::vector<Mat> getWeights(Mat &img1, Mat &img2);
     Mat getWeightedMap(Mat &img);
-    double exponential_euclidean(int channel, double sigma);
-    int max_channel(int r, int g, int b);
+    double exponential_euclidean(double channel, double sigma);
+    double max_channel(double r, double g, double b);
     int min_channel(int r, int g, int b);
 
 private:
