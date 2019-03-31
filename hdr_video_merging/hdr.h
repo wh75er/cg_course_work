@@ -33,7 +33,6 @@ protected:
     double exponential_euclidean(double channel, double sigma);
     double max_channel(double r, double g, double b);
     int min_channel(int r, int g, int b);
-    Mat getImageIntensity(Mat &img);
 
 private:
     string* path;
