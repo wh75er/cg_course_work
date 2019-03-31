@@ -179,6 +179,9 @@ std::vector<Mat> HdrCap::getWeights(Mat &img1, Mat &img2)
 
 Mat HdrCap::getWeightedMap(Mat &img)
 {
+
+    Mat intensity = getIntensityImage(img);
+
     Mat wMap(img.rows, img.cols, CV_64F);
     double w_c = 1, w_s = 1, w_e = 1;
 
@@ -186,7 +189,7 @@ Mat HdrCap::getWeightedMap(Mat &img)
     cvtColor(img, grayscale, COLOR_RGB2GRAY);
 
     Laplacian(grayscale, laplacianDst, CV_64F);
-    cout << laplacianDst;
+    //cout << laplacianDst;
     //absDst = abs(laplacianDst);
     //cout << "\n\n\n\n\n\n" << absDst;
 
@@ -196,20 +199,19 @@ Mat HdrCap::getWeightedMap(Mat &img)
           w_exposedness,
           sigma = 0.2;
     for(int i = 0; i < wMap.rows; i++) {
-        uchar *imgp = img.ptr(i);
         double *wp = wMap.ptr<double>(i);
         for(int j = 0; j < wMap.cols; j++) {
             // contrast
             w_contrast = pow(abs(laplacianDst.at<double>(i, j)), w_c);
             w = w_contrast;
             //cout << "laplacianDst.at<double>(i, j):" << laplacianDst.at<double>(i, j) << "\n";
-            cout << "abs(laplacianDst.at<double>(i, j)): " << abs(laplacianDst.at<double>(i, j)) << "\n";
-            cout << "contrast: " << w_contrast << "\n\n";
+            //cout << "abs(laplacianDst.at<double>(i, j)): " << abs(laplacianDst.at<double>(i, j)) << "\n";
+            //cout << "contrast: " << w_contrast << "\n\n";
 
             // saturation
-            double  r = double(imgp[0])/255.0,
-                    g = double(imgp[1])/255.0,
-                    b = double(imgp[2])/255.0;
+            double  r = double(img.at<Vec3b>(i, j)[0])/255.0,
+                    g = double(img.at<Vec3b>(i, j)[1])/255.0,
+                    b = double(img.at<Vec3b>(i, j)[2])/255.0;
             //cout << "red: " << r << "\n";
             //cout << "green: " << g << "\n";
             //cout << "blue: " << b << "\n";
@@ -220,9 +222,9 @@ Mat HdrCap::getWeightedMap(Mat &img)
             w *= w_saturation;
 
             // well-exposedness
-            double red_exp = exponential_euclidean(double(imgp[0]/255.0), sigma),
-                   green_exp = exponential_euclidean(double(imgp[1]/255.0), sigma),
-                   blue_exp = exponential_euclidean(double(imgp[2]/255.0), sigma);
+            double red_exp = exponential_euclidean(r/255.0, sigma),
+                   green_exp = exponential_euclidean(g/255.0, sigma),
+                   blue_exp = exponential_euclidean(b/255.0, sigma);
             //cout << "red channel double(imgp[0])/255: " << double(imgp[0])/255 << "\n";
             //cout << "red channel int(imgp[0]): " << int(imgp[0]) << "\n";
             //cout << "red channel exposedness: " << red_exp << "\n\n";
@@ -267,4 +269,45 @@ int HdrCap::min_channel(int r, int g, int b)
             min = b;
         }
         return min;
+}
+
+Mat HdrCap::getIntensityImage(Mat &img)
+{
+    Mat intensity = Mat(img.rows, img.cols, CV_64FC3);
+
+    for(int i = 0; i < img.rows; i++) {
+        for(int j = 0; j < img.cols; j++) {
+            //intensp[0] = double(imgp[0])/255.0;
+            //intensp[1] = double(imgp[1])/255.0;
+            //intensp[2] = double(imgp[2])/255.0;
+            intensity.at<Vec3d>(i, j)[0] = double(img.at<Vec3b>(i, j)[0])/255.0;
+            intensity.at<Vec3d>(i, j)[1] = double(img.at<Vec3b>(i, j)[1])/255.0;
+            intensity.at<Vec3d>(i, j)[2] = double(img.at<Vec3b>(i, j)[2])/255.0;
+//                cout << intensity.at<Vec3d>(i, j)[0] << " ";
+//                cout << intensity.at<Vec3d>(i, j)[1] << " ";
+//                cout << intensity.at<Vec3d>(i, j)[2] << "\n";
+//                cout << double(imgp[0])/255.0 << " ";
+//                cout << double(imgp[1])/255.0 << " ";
+//                cout << double(imgp[2])/255.0 << "\n";
+//                cout << "Rgb intensity values: " << double(img.at<Vec3b>(i, j)[0])/255.0 << "  " <<
+//                                              double(img.at<Vec3b>(i, j)[1])/255.0 << "  " <<
+//                                              double(img.at<Vec3b>(i, j)[2])/255.0 << "\n\n";
+//                cout << "I: " << i << " J: " << j << "\n";
+//                cout << double(imgp[0])/255.0 << " ";
+//                cout << double(imgp[1])/255.0 << " ";
+//                cout << double(imgp[2])/255.0 << "\n";
+//                cout << "Rgb intensity values: " << double(img.at<Vec3b>(i, j)[0])/255.0 << "  " <<
+//                                              double(img.at<Vec3b>(i, j)[1])/255.0 << "  " <<
+//                                              double(img.at<Vec3b>(i, j)[2])/255.0 << "\n\n";
+        }
+    }
+
+//    cout << intensity << "\n";
+//    cout << intensity.at<Vec3d>(img.rows-1, img.cols-1)[0] << " ";
+//    cout << intensity.at<Vec3d>(img.rows-1, img.cols-1)[1] << " ";
+//    cout << intensity.at<Vec3d>(img.rows-1, img.cols-1)[2] << "\n";
+//    cout << "last itensities: " << double(img.at<Vec3b>(img.rows-1, img.cols-1)[0])/255.0 << "  " <<
+//                                  double(img.at<Vec3b>(img.rows-1, img.cols-1)[1])/255.0 << "  " <<
+//                                  double(img.at<Vec3b>(img.rows-1, img.cols-1)[2])/255.0 << "\n";
+    return intensity;
 }
