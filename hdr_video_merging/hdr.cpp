@@ -271,7 +271,7 @@ int HdrCap::min_channel(int r, int g, int b)
         return min;
 }
 
-Mat HdrCap::getIntensityImage(Mat &img)
+Mat HdrCap::getImageIntensity(Mat &img)
 {
     Mat intensity = Mat(img.rows, img.cols, CV_64FC3);
 
