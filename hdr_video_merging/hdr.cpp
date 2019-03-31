@@ -181,15 +181,15 @@ Mat HdrCap::getWeightedMap(Mat &img)
 {
     img.convertTo(img, CV_32F, 1.0/255.0);
 
-    Mat wMap(img.rows, img.cols, CV_64F);
+    Mat wMap(img.rows, img.cols, CV_32F);
     double w_c = 1, w_s = 1, w_e = 1;
 
     Mat grayscale, laplacianDst, absDst;
     cvtColor(img, grayscale, COLOR_RGB2GRAY);
 
-    Laplacian(grayscale, laplacianDst, CV_64F);
+    Laplacian(grayscale, laplacianDst, CV_32F);
     //cout << laplacianDst;
-    //absDst = abs(laplacianDst);
+    absDst = abs(laplacianDst);
     //cout << "\n\n\n\n\n\n" << absDst;
 
     double w,
@@ -198,42 +198,40 @@ Mat HdrCap::getWeightedMap(Mat &img)
           w_exposedness,
           sigma = 0.2;
     for(int i = 0; i < wMap.rows; i++) {
-        double *wp = wMap.ptr<double>(i);
+        float *wp = wMap.ptr<float>(i);
         for(int j = 0; j < wMap.cols; j++) {
             // contrast
-            w_contrast = pow(abs(laplacianDst.at<double>(i, j)), w_c);
+            w_contrast = pow(abs(laplacianDst.at<float>(i, j)), w_c);
             w = w_contrast;
-            //cout << "laplacianDst.at<double>(i, j):" << laplacianDst.at<double>(i, j) << "\n";
-            //cout << "abs(laplacianDst.at<double>(i, j)): " << abs(laplacianDst.at<double>(i, j)) << "\n";
-            //cout << "contrast: " << w_contrast << "\n\n";
+            cout << "laplacianDst.at<float>(i, j):" << laplacianDst.at<float>(i, j) << "\n";
+            cout << "abs(laplacianDst.at<float>(i, j)): " << abs(laplacianDst.at<float>(i, j)) << "\n";
+            cout << "contrast: " << w_contrast << "\n";
 
             // saturation
-            double  r = double(img.at<Vec3b>(i, j)[0]),
-                    g = double(img.at<Vec3b>(i, j)[1]),
-                    b = double(img.at<Vec3b>(i, j)[2]);
-            //cout << "red: " << r << "\n";
-            //cout << "green: " << g << "\n";
-            //cout << "blue: " << b << "\n";
+            double  r = double(img.at<Vec3f>(i, j)[0]),
+                    g = double(img.at<Vec3f>(i, j)[1]),
+                    b = double(img.at<Vec3f>(i, j)[2]);
+            cout << "red: " << r << "\n";
+            cout << "green: " << g << "\n";
+            cout << "blue: " << b << "\n";
             double mean = (r + g + b)/3.0;
             w_saturation = pow(sqrt((pow(r - mean, 2) + pow(g - mean, 2) +
                                     pow(b - mean, 2)) / 3), w_s);
-            //cout << "w_saturation: " << w_saturation << "\n";
+            cout << "w_saturation: " << w_saturation << "\n";
             w *= w_saturation;
 
             // well-exposedness
             double red_exp = exponential_euclidean(r, sigma),
                    green_exp = exponential_euclidean(g, sigma),
                    blue_exp = exponential_euclidean(b, sigma);
-            //cout << "red channel double(imgp[0])/255: " << double(imgp[0])/255 << "\n";
-            //cout << "red channel int(imgp[0]): " << int(imgp[0]) << "\n";
             //cout << "red channel exposedness: " << red_exp << "\n\n";
 
             w_exposedness = pow(red_exp * green_exp * blue_exp, w_e);
             w *= w_exposedness;
-            //cout << "exposedness: " << w_exposedness << "\n\n";
+            cout << "exposedness: " << w_exposedness << "\n\n";
 
             //cout << "w: " << w << "\n\n";
-            wp[j] = w;
+            wp[j] = float(w);
             //wMap.at<float>(i, j) = 255;//float(w);
         }
     }
