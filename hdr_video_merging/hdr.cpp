@@ -208,9 +208,9 @@ Mat HdrCap::getWeightedMap(Mat &img)
             //cout << "contrast: " << w_contrast << "\n\n";
 
             // saturation
-            double  r = double(img.at<Vec3b>(i, j)[0])/255.0,
-                    g = double(img.at<Vec3b>(i, j)[1])/255.0,
-                    b = double(img.at<Vec3b>(i, j)[2])/255.0;
+            double  r = double(img.at<Vec3b>(i, j)[0]),
+                    g = double(img.at<Vec3b>(i, j)[1]),
+                    b = double(img.at<Vec3b>(i, j)[2]);
             //cout << "red: " << r << "\n";
             //cout << "green: " << g << "\n";
             //cout << "blue: " << b << "\n";
@@ -221,9 +221,9 @@ Mat HdrCap::getWeightedMap(Mat &img)
             w *= w_saturation;
 
             // well-exposedness
-            double red_exp = exponential_euclidean(r/255.0, sigma),
-                   green_exp = exponential_euclidean(g/255.0, sigma),
-                   blue_exp = exponential_euclidean(b/255.0, sigma);
+            double red_exp = exponential_euclidean(r, sigma),
+                   green_exp = exponential_euclidean(g, sigma),
+                   blue_exp = exponential_euclidean(b, sigma);
             //cout << "red channel double(imgp[0])/255: " << double(imgp[0])/255 << "\n";
             //cout << "red channel int(imgp[0]): " << int(imgp[0]) << "\n";
             //cout << "red channel exposedness: " << red_exp << "\n\n";
