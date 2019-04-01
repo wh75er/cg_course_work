@@ -14,6 +14,8 @@ public:
     Mat merge_frames(Mat &img1, Mat &img2);
     int tonemap_frames();
 
+    Mat exposure_fusion(Mat &img1, Mat &img2);
+
     bool add_frame();
 
 protected:
@@ -29,7 +31,7 @@ protected:
     Mat imgToBitmapTransform(Mat &img);
 
     std::vector<Mat> getWeights(Mat &img1, Mat &img2);
-    Mat getWeightedMap(Mat &img);
+    Mat getWeightedMap(Mat &image);
     double exponential_euclidean(double channel, double sigma);
     double max_channel(double r, double g, double b);
     int min_channel(int r, int g, int b);

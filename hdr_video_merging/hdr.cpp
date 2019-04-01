@@ -177,9 +177,10 @@ std::vector<Mat> HdrCap::getWeights(Mat &img1, Mat &img2)
     return weights;
 }
 
-Mat HdrCap::getWeightedMap(Mat &img)
+Mat HdrCap::getWeightedMap(Mat &image)
 {
-    img.convertTo(img, CV_32F, 1.0/255.0);
+    Mat img;
+    image.convertTo(img, CV_32F, 1.0/255.0);
 
     Mat wMap(img.rows, img.cols, CV_32F);
     double w_c = 1, w_s = 1, w_e = 1;
@@ -203,21 +204,21 @@ Mat HdrCap::getWeightedMap(Mat &img)
             // contrast
             w_contrast = pow(abs(laplacianDst.at<float>(i, j)), w_c);
             w = w_contrast;
-            cout << "laplacianDst.at<float>(i, j):" << laplacianDst.at<float>(i, j) << "\n";
-            cout << "abs(laplacianDst.at<float>(i, j)): " << abs(laplacianDst.at<float>(i, j)) << "\n";
-            cout << "contrast: " << w_contrast << "\n";
+//            cout << "laplacianDst.at<float>(i, j):" << laplacianDst.at<float>(i, j) << "\n";
+//            cout << "abs(laplacianDst.at<float>(i, j)): " << abs(laplacianDst.at<float>(i, j)) << "\n";
+//            cout << "contrast: " << w_contrast << "\n";
 
             // saturation
             double  r = double(img.at<Vec3f>(i, j)[0]),
                     g = double(img.at<Vec3f>(i, j)[1]),
                     b = double(img.at<Vec3f>(i, j)[2]);
-            cout << "red: " << r << "\n";
-            cout << "green: " << g << "\n";
-            cout << "blue: " << b << "\n";
+//            cout << "red: " << r << "\n";
+//            cout << "green: " << g << "\n";
+//            cout << "blue: " << b << "\n";
             double mean = (r + g + b)/3.0;
             w_saturation = pow(sqrt((pow(r - mean, 2) + pow(g - mean, 2) +
                                     pow(b - mean, 2)) / 3), w_s);
-            cout << "w_saturation: " << w_saturation << "\n";
+//            cout << "w_saturation: " << w_saturation << "\n";
             w *= w_saturation;
 
             // well-exposedness
@@ -228,11 +229,11 @@ Mat HdrCap::getWeightedMap(Mat &img)
 
             w_exposedness = pow(red_exp * green_exp * blue_exp, w_e);
             w *= w_exposedness;
-            cout << "exposedness: " << w_exposedness << "\n\n";
+            w += 1e-12;
+//            cout << "exposedness: " << w_exposedness << "\n\n";
 
-            //cout << "w: " << w << "\n\n";
+            cout << "w: " << w << "\n\n";
             wp[j] = float(w);
-            //wMap.at<float>(i, j) = 255;//float(w);
         }
     }
 
@@ -266,4 +267,11 @@ int HdrCap::min_channel(int r, int g, int b)
             min = b;
         }
         return min;
+}
+
+Mat HdrCap::exposure_fusion(Mat &img1, Mat &img2)
+{
+    Mat R;
+
+    return R;
 }
