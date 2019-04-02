@@ -269,9 +269,58 @@ int HdrCap::min_channel(int r, int g, int b)
         return min;
 }
 
-Mat HdrCap::exposure_fusion(Mat &img1, Mat &img2)
+Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2)
 {
-    Mat R;
 
-    return R;
+    std::vector<Mat> images;
+    images.push_back(image1);
+    images.push_back(image2);
+    Mat dst, img;
+    Size size = image1.size();
+
+    Mat weight_sum = Mat::zeros(size, CV_32F);
+    std::vector<Mat> weights = getWeights(images[0], images[1]);
+    weight_sum += weights[0] + weights[1];
+
+    size_t maxlevel = static_cast<size_t>(logf(static_cast<float>(min(size.width, size.height))) / logf(2.0f));
+    std::vector<Mat> res_pyr(maxlevel + 1);
+
+    for(size_t i = 0; i < images.size(); i++) {
+        weights[i] /= weight_sum;
+        Mat img;
+        images[i].convertTo(img, CV_32F, 1.0/255.0);
+
+        std::vector<Mat> img_pyr, weight_pyr;
+        buildPyramid(img, img_pyr, int(maxlevel));
+        buildPyramid(weights[i], weight_pyr, int(maxlevel));
+
+        for(size_t lvl = 0; lvl < maxlevel; lvl++) {
+            Mat up;
+            pyrUp(img_pyr[lvl + 1], up, img_pyr[lvl].size());
+            img_pyr[lvl] -= up;
+        }
+        for(size_t lvl = 0; lvl <= maxlevel; lvl++) {
+            std::vector<Mat> splitted(3);
+            split(img_pyr[lvl], splitted);
+            for(size_t c = 0; c < 3; c++) {
+                splitted[c] = splitted[c].mul(weight_pyr[lvl]);
+            }
+            merge(splitted, img_pyr[lvl]);
+            if(res_pyr[lvl].empty()) {
+                res_pyr[lvl] = img_pyr[lvl];
+            } else {
+                res_pyr[lvl] += img_pyr[lvl];
+            }
+        }
+    }
+    for(size_t lvl = maxlevel; lvl > 0; lvl--) {
+        Mat up;
+        pyrUp(res_pyr[lvl], up, res_pyr[lvl - 1].size());
+        res_pyr[lvl - 1] += up;
+    }
+    dst.create(size, CV_32FC3);
+    res_pyr[0].copyTo(dst);
+
+
+    return dst;
 }
