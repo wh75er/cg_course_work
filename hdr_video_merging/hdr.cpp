@@ -343,14 +343,6 @@ std::vector<Mat> HdrCap::integrateMovementsToWeights(InputArrayOfArrays src, int
     std::vector<float> average2 = getAverageClastersWeights(weights[1], nLabels, labeledMap);
 
     for(size_t i = 1; i < size_t(nLabels); i++){
-        cout << average1[i] << "\n";
-    }
-    cout << "\n\n";
-    for(size_t i = 1; i < size_t(nLabels); i++){
-        cout << average2[i] << "\n";
-    }
-
-    for(size_t i = 1; i < size_t(nLabels); i++){
         if(average1[i] >= average2[i]){
             average1[i] = 1;
             average2[i] = 0;
