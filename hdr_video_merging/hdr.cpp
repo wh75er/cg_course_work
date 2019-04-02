@@ -282,10 +282,12 @@ Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2, int nLabels, Mat &labeledM
 
     Mat weight_sum = Mat::zeros(size, CV_32F);
     std::vector<Mat> weights = getWeights(images[0], images[1]);
+    weights = integrateMovementsToWeights(weights, nLabels, labeledMap);
     weight_sum += weights[0] + weights[1];
     //cout << weights[0] << "\n";
     //cout << weights[1] << "\n";
     //cout << weight_sum << "\n";
+
 
     size_t maxlevel = static_cast<size_t>(logf(static_cast<float>(min(size.width, size.height))) / logf(2.0f));
     std::vector<Mat> res_pyr(maxlevel + 1);
@@ -330,26 +332,71 @@ Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2, int nLabels, Mat &labeledM
     return dst;
 }
 
-std::vector<Mat> HdrCap::integrateMovementsToWeights(InputArrayOfArrays weights, Mat labeledMap)
+std::vector<Mat> HdrCap::integrateMovementsToWeights(InputArrayOfArrays src, int nLabels, Mat &labeledMap)
 {
+    std::vector<Mat> weights;
+    src.getMatVector(weights);
+
     std::vector<Mat> correctedWeights;
+
+    std::vector<float> average1 = getAverageClastersWeights(weights[0], nLabels, labeledMap);
+    std::vector<float> average2 = getAverageClastersWeights(weights[1], nLabels, labeledMap);
+
+    for(size_t i = 1; i < size_t(nLabels); i++){
+        cout << average1[i] << "\n";
+    }
+    cout << "\n\n";
+    for(size_t i = 1; i < size_t(nLabels); i++){
+        cout << average2[i] << "\n";
+    }
+
+    for(size_t i = 1; i < size_t(nLabels); i++){
+        if(average1[i] >= average2[i]){
+            average1[i] = 1;
+            average2[i] = 0;
+        } else {
+            average1[i] = 0;
+            average2[i] = 1;
+        }
+    }
+
+    for(int i = 0; i < weights[0].rows; i++){
+        for(int j = 0; j < weights[0].cols; j++){
+            if(labeledMap.at<float>(i, j) != 0.0f) {
+                weights[0].at<float>(i, j) = average1[size_t(labeledMap.at<int>(i, j))];
+                weights[1].at<float>(i, j) = average2[size_t(labeledMap.at<int>(i, j))];
+            }
+        }
+    }
+
+    correctedWeights.push_back(weights[0]);
+    correctedWeights.push_back(weights[1]);
 
     return correctedWeights;
 }
 
-std::vector<float> HdrCap::getAverageClastersWeights(Mat weight, Mat labeledMap)
+std::vector<float> HdrCap::getAverageClastersWeights(Mat weightMap, int nLabels, Mat &labeledMap)
 {
-    int max = -1;
+    std::vector<std::vector<float>> aMeasurements(size_t(nLabels), vector<float>(2));
+    for(size_t i = 0; i < size_t(nLabels); i++) {
+        aMeasurements[i].push_back(0.0f);
+        aMeasurements[i].push_back(0.0f);
+    }
+
     for(int i = 0; i < labeledMap.rows; i++) {
         for(int j = 0; j < labeledMap.cols; j++) {
-            if(labeledMap.at<int>(i, j) > max)
-                max = labeledMap.at<int>(i, j);
+            if(labeledMap.at<int>(i, j) != 0) {
+                aMeasurements[size_t(labeledMap.at<int>(i, j))][0] += weightMap.at<float>(i, j);
+                aMeasurements[size_t(labeledMap.at<int>(i, j))][1] += 1.0f;
+            }
         }
     }
 
-    cout << "Max claster is: " << max << "\n";
+    std::vector<float> average(size_t(nLabels), 0);
 
-    std::vector<float> average;
+    for(size_t i = 0; i < size_t(nLabels); i++) {
+        average[i] = aMeasurements[i][0] / aMeasurements[i][1];
+    }
 
     return average;
 }

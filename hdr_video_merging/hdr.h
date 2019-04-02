@@ -34,8 +34,8 @@ protected:
     double max_channel(double r, double g, double b);
     int min_channel(int r, int g, int b);
 
-    std::vector<Mat> integrateMovementsToWeights(InputArrayOfArrays weights, Mat labeledMap);
-    std::vector<float> getAverageClastersWeights(Mat weight, Mat labeledMap);
+    std::vector<Mat> integrateMovementsToWeights(InputArrayOfArrays weights, int nLabels, Mat &labeledMap);
+    std::vector<float> getAverageClastersWeights(Mat weightMap, int nLabels, Mat &labeledMap);
 
 private:
     string* path;
