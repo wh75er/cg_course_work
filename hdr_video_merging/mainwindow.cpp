@@ -58,6 +58,9 @@ void MainWindow::on_convertBtn_clicked()
 
             Mat hdr_frame = hdrCap->merge_frames(images[0], images[1]);
             imshow("hdr_frame", hdr_frame);
+
+            Mat exposure_fusion = hdrCap->exposure_fusion(images[0], images[1]);
+            imshow("hdr_exposure_fusion", exposure_fusion);
         }
 
 

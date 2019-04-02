@@ -54,8 +54,6 @@ Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
     Mat result;
     merge_mertens->process(images, result);
 
-    std::vector<Mat> weights = getWeights(img1, img2);
-
     return result;
 }
 
@@ -167,8 +165,7 @@ std::vector<Mat> HdrCap::getWeights(Mat &img1, Mat &img2)
     Mat weightMap2;
 
     weightMap1 = getWeightedMap(img1);
-    //cout << weightMap1;
-    //weightMap2 = getWeightedMap(img2);
+    weightMap2 = getWeightedMap(img2);
 
     std::vector<Mat> weights;
     weights.push_back(weightMap1);
@@ -232,7 +229,7 @@ Mat HdrCap::getWeightedMap(Mat &image)
             w += 1e-12;
 //            cout << "exposedness: " << w_exposedness << "\n\n";
 
-            cout << "w: " << w << "\n\n";
+//            cout << "w: " << w << "\n\n";
             wp[j] = float(w);
         }
     }
@@ -275,12 +272,15 @@ Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2)
     std::vector<Mat> images;
     images.push_back(image1);
     images.push_back(image2);
-    Mat dst, img;
+    Mat dst;
     Size size = image1.size();
 
     Mat weight_sum = Mat::zeros(size, CV_32F);
     std::vector<Mat> weights = getWeights(images[0], images[1]);
     weight_sum += weights[0] + weights[1];
+    //cout << weights[0] << "\n";
+    //cout << weights[1] << "\n";
+    //cout << weight_sum << "\n";
 
     size_t maxlevel = static_cast<size_t>(logf(static_cast<float>(min(size.width, size.height))) / logf(2.0f));
     std::vector<Mat> res_pyr(maxlevel + 1);
