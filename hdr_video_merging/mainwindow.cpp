@@ -53,13 +53,14 @@ void MainWindow::on_convertBtn_clicked()
             imshow("prev_frame_aligned", images[0]);
             imshow("frame_aligned", images[1]);
 
-            Mat tb = hdrCap->deghost_frames(images[0], images[1]);
-            imshow("Bitmap threshold", tb);
+            std::vector<Mat> labeledMap;
+            int nLabels = hdrCap->deghost_frames(images[0], images[1], labeledMap);
+            imshow("Bitmap threshold", labeledMap[1]);
 
             Mat hdr_frame = hdrCap->merge_frames(images[0], images[1]);
             imshow("hdr_frame", hdr_frame);
 
-            Mat exposure_fusion = hdrCap->exposure_fusion(images[0], images[1]);
+            Mat exposure_fusion = hdrCap->exposure_fusion(images[0], images[1], nLabels, labeledMap[0]);
             imshow("hdr_exposure_fusion", exposure_fusion);
         }
 

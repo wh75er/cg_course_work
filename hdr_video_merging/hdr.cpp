@@ -20,7 +20,7 @@ vector<Mat> HdrCap::align_frames(Mat &img1, Mat &img2)
     return images;
 }
 
-Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
+int HdrCap::deghost_frames(Mat &img1, Mat &img2, std::vector<Mat>& labeledMap)
 {
     Mat img1_g, img2_g;
     GaussianBlur(img1, img1_g, Size(21, 21), 0, 0);
@@ -40,7 +40,12 @@ Mat HdrCap::deghost_frames(Mat &img1, Mat &img2)
 
     Mat coloredLabel = colorLabeled(labeledComponents, nLabels);
 
-    return coloredLabel;
+    //std::vector<Mat> labeledMap;
+    //labeledMap.push_back(nLabels);
+    labeledMap.push_back(labeledComponents);
+    labeledMap.push_back(coloredLabel);
+
+    return nLabels;
 }
 
 Mat HdrCap::merge_frames(Mat &img1, Mat &img2)
@@ -266,7 +271,7 @@ int HdrCap::min_channel(int r, int g, int b)
         return min;
 }
 
-Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2)
+Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2, int nLabels, Mat &labeledMap)
 {
 
     std::vector<Mat> images;
@@ -323,4 +328,28 @@ Mat HdrCap::exposure_fusion(Mat &image1, Mat &image2)
 
 
     return dst;
+}
+
+std::vector<Mat> HdrCap::integrateMovementsToWeights(InputArrayOfArrays weights, Mat labeledMap)
+{
+    std::vector<Mat> correctedWeights;
+
+    return correctedWeights;
+}
+
+std::vector<float> HdrCap::getAverageClastersWeights(Mat weight, Mat labeledMap)
+{
+    int max = -1;
+    for(int i = 0; i < labeledMap.rows; i++) {
+        for(int j = 0; j < labeledMap.cols; j++) {
+            if(labeledMap.at<int>(i, j) > max)
+                max = labeledMap.at<int>(i, j);
+        }
+    }
+
+    cout << "Max claster is: " << max << "\n";
+
+    std::vector<float> average;
+
+    return average;
 }

@@ -10,13 +10,11 @@ public:
     ~HdrCap();
 
     vector<Mat> align_frames(Mat &img1, Mat &img2);
-    Mat deghost_frames(Mat &img1, Mat &img2);
+    int deghost_frames(Mat &img1, Mat &img2, std::vector<Mat> &labeledMap);
     Mat merge_frames(Mat &img1, Mat &img2);
     int tonemap_frames();
 
-    Mat exposure_fusion(Mat &img1, Mat &img2);
-
-    bool add_frame();
+    Mat exposure_fusion(Mat &image1, Mat &image2, int nLabels, Mat &labeledMap);
 
 protected:
     int exclude_range = 4;
@@ -35,6 +33,9 @@ protected:
     double exponential_euclidean(double channel, double sigma);
     double max_channel(double r, double g, double b);
     int min_channel(int r, int g, int b);
+
+    std::vector<Mat> integrateMovementsToWeights(InputArrayOfArrays weights, Mat labeledMap);
+    std::vector<float> getAverageClastersWeights(Mat weight, Mat labeledMap);
 
 private:
     string* path;
