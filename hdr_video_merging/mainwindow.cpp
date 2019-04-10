@@ -19,6 +19,7 @@ ui(new Ui::MainWindow)
     this->SET_WATCH_EVERY_FRAME = true;
     this->STOP_BUTTON_WAS_PRESSED = false;
     this->NEXT_BUTTON_WAS_PRESSED = false;
+    this->SHOW_MOVEMENT_MAP = false;
 }
 
 MainWindow::~MainWindow()
@@ -74,7 +75,8 @@ void MainWindow::on_convertBtn_clicked()
 
             std::vector<Mat> labeledMap;
             int nLabels = this->hdrCap->deghost_frames(images[0], images[1], labeledMap);
-            //imshow("Bitmap threshold", labeledMap[1]);
+            if(this->SHOW_MOVEMENT_MAP)
+                imshow("labeled movement map", labeledMap[1]);
 
             //Mat hdr_frame = hdrCap->merge_frames(images[0], images[1]);
             //imshow("hdr_frame", hdr_frame);
@@ -176,4 +178,12 @@ void MainWindow::on_actionOpen_triggered()
         ui->convertBtn->setEnabled(true);
     }
     delete temp;
+}
+
+void MainWindow::on_moveCheckBox_stateChanged(int arg1)
+{
+    if(this->SHOW_MOVEMENT_MAP)
+        this->SHOW_MOVEMENT_MAP = false;
+    else
+        this->SHOW_MOVEMENT_MAP = true;
 }

@@ -32,6 +32,8 @@ private slots:
 
     void on_actionOpen_triggered();
 
+    void on_moveCheckBox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     Video* video;
@@ -40,6 +42,7 @@ private:
     bool SET_WATCH_EVERY_FRAME;
     bool NEXT_BUTTON_WAS_PRESSED;
     bool STOP_BUTTON_WAS_PRESSED;
+    bool SHOW_MOVEMENT_MAP;
 };
 
 #endif // MAINWINDOW_H
