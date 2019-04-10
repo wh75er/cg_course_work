@@ -34,6 +34,8 @@ private slots:
 
     void on_moveCheckBox_stateChanged(int arg1);
 
+    void on_saveBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     Video* video;

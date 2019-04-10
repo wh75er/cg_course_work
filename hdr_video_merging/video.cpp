@@ -56,8 +56,13 @@ void Video::saveVideo()
 {
     VideoWriter vid("../hdr_saved.avi", VideoWriter::fourcc('M','J','P','G'), this->frames, Size(this->width, this->height));
 
+    Rect rectCrop(0, 0, this->width, this->height);
+
+    Mat image8Bit;
     for(size_t i = 0; i < this->sequence.size(); i++){
-        vid.write(sequence[i]);
+        Mat frame(sequence[i], rectCrop);
+        frame.convertTo(image8Bit, CV_8UC3, 255);
+        vid.write(image8Bit);
     }
 
     vid.release();

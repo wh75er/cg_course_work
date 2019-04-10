@@ -161,6 +161,7 @@ void MainWindow::on_stopBtn_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
+    ui->saveBtn->setEnabled(false);
     QString fName = QFileDialog::getOpenFileName(this,
             tr("Open video to convert"), "",
             tr("Video file (*.avi);;All Files (*)"));
@@ -204,4 +205,9 @@ void MainWindow::on_moveCheckBox_stateChanged(int arg1)
         this->SHOW_MOVEMENT_MAP = false;
     else
         this->SHOW_MOVEMENT_MAP = true;
+}
+
+void MainWindow::on_saveBtn_clicked()
+{
+    this->hdrVideo->saveVideo();
 }
