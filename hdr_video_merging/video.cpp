@@ -1,10 +1,9 @@
 #include "video.h"
 
-Video::Video(string* path)
+Video::Video(string &path)
 {
     this->path = path;
-    String temp(path->c_str());
-    this->cap = new VideoCapture(temp);
+    this->cap = new VideoCapture(this->path);
 }
 
 Video::~Video()
@@ -30,7 +29,7 @@ int Video::get_frames()
 
 string Video::get_path()
 {
-    return *this->path;
+    return this->path;
 }
 
 VideoCapture* Video::get_capture()

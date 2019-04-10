@@ -6,7 +6,7 @@
 class Video
 {
 public:
-    explicit Video(string* path);
+    explicit Video(string &path);
     ~Video();
 
     string get_path();
@@ -16,7 +16,7 @@ public:
     VideoCapture *get_capture();
 
 private:
-    string* path;
+    string path;
     VideoCapture *cap;
     int width;
     int height;

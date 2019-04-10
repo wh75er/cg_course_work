@@ -2,6 +2,7 @@
 #define LIBS_H
 
 #include <iostream>
+#include <chrono>
 
 #include <opencv2/core.hpp>
 #include <opencv2/video/video.hpp>
