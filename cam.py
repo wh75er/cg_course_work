@@ -2,12 +2,14 @@ import numpy as np
 import cv2
 import time
 
-filename = "video.avi"
+filename = "video_street_240p.avi"
 frames_per_seconds = 30.0
+res240p = {'width':426, 'height':240}
+res360p = {'width':640, 'height':360}
 res480p = {'width':640, 'height':480}
 res720p = {'width':1280, 'height':720}
-width = res480p['width']
-height = res480p['height']
+width = res240p['width']
+height = res240p['height']
 
 cap = cv2.VideoCapture(0)
 out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), frames_per_seconds, 
@@ -22,13 +24,13 @@ exposureChanger = False
 
 while(True): 
     if exposureChanger:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.8)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.1)
         exposureChanger = False
     else:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.09)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.009)
         exposureChanger = True
 
-    time.sleep(.100)
+    #time.sleep(.100)
     ret, frame = cap.read()
     if count > 10:
         cv2.imshow('Video', frame)
