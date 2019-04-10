@@ -37,6 +37,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Video* video;
+    Video* hdrVideo;
     HdrCap* hdrCap;
 
     bool SET_WATCH_EVERY_FRAME;

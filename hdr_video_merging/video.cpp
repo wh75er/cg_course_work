@@ -12,6 +12,21 @@ Video::~Video()
 }
 
 
+void Video::set_width(int w)
+{
+    this->width = w;
+}
+
+void Video::set_height(int h)
+{
+    this->height = h;
+}
+
+void Video::set_frames(int f)
+{
+    this->frames = f;
+}
+
 int Video::get_width()
 {
     return this->width;
@@ -35,4 +50,15 @@ string Video::get_path()
 VideoCapture* Video::get_capture()
 {
     return this->cap;
+}
+
+void Video::saveVideo()
+{
+    VideoWriter vid("../hdr_saved.avi", VideoWriter::fourcc('M','J','P','G'), this->frames, Size(this->width, this->height));
+
+    for(size_t i = 0; i < this->sequence.size(); i++){
+        vid.write(sequence[i]);
+    }
+
+    vid.release();
 }

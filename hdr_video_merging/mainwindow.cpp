@@ -7,6 +7,7 @@ ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setbuf(stdout, nullptr);
+
     this->filename = string("../video_street.avi");
     ui->TextStatus->setStyleSheet("QLabel { color : green; }");
     std::string info = "File exists\nPATH: " + this->filename;
@@ -15,6 +16,11 @@ ui(new Ui::MainWindow)
     ui->saveBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
     ui->stopBtn->setEnabled(false);
+
+    this->hdrVideo = new Video(this->filename);
+    hdrVideo->set_frames(30);
+    hdrVideo->set_width(1280);
+    hdrVideo->set_height(720);
 
     this->SET_WATCH_EVERY_FRAME = true;
     this->STOP_BUTTON_WAS_PRESSED = false;
@@ -25,11 +31,15 @@ ui(new Ui::MainWindow)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete hdrVideo;
 }
 
 void MainWindow::on_convertBtn_clicked()
 {
     std::cout << "hello world\n";
+
+    ui->saveBtn->setEnabled(false);
+    this->hdrVideo->sequence.clear();
 
     this->video = new Video(this->filename);
     std::cout << this->video->get_path();
@@ -84,6 +94,11 @@ void MainWindow::on_convertBtn_clicked()
             Mat exposure_fusion = this->hdrCap->exposure_fusion(images[0], images[1], nLabels, labeledMap[0]);
             //auto end = chrono::steady_clock::now();
             imshow("hdr_exposure_fusion", exposure_fusion);
+            if(exposure_fusion.cols < hdrVideo->get_width())
+                hdrVideo->set_width(exposure_fusion.cols);
+            if(exposure_fusion.rows < hdrVideo->get_height())
+                hdrVideo->set_height(exposure_fusion.rows);
+            hdrVideo->sequence.push_back(exposure_fusion);
             //cout << "Time of exposure fusion: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << "ms"
             //     << endl;
         }
@@ -113,11 +128,11 @@ void MainWindow::on_convertBtn_clicked()
     delete this->video;
     delete this->hdrCap;
 
+    ui->saveBtn->setEnabled(true);
     ui->convertBtn->setEnabled(true);
     ui->actionOpen->setEnabled(true);
     ui->playPauseBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
-    ui->saveBtn->setEnabled(false);
     ui->stopBtn->setEnabled(false);
 }
 
@@ -182,6 +197,9 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_moveCheckBox_stateChanged(int arg1)
 {
+    ui->saveBtn->setEnabled(false);
+    this->hdrVideo->sequence.clear();
+
     if(this->SHOW_MOVEMENT_MAP)
         this->SHOW_MOVEMENT_MAP = false;
     else
