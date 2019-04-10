@@ -30,6 +30,8 @@ private slots:
 
     void on_stopBtn_clicked();
 
+    void on_actionOpen_triggered();
+
 private:
     Ui::MainWindow *ui;
     Video* video;

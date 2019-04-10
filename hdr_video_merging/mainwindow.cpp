@@ -46,6 +46,7 @@ void MainWindow::on_convertBtn_clicked()
     ui->playPauseBtn->setEnabled(true);
     ui->nextBtn->setEnabled(true);
     ui->stopBtn->setEnabled(true);
+    ui->actionOpen->setEnabled(false);
 
     int pressed_key;
     Mat frame, prev_frame;
@@ -111,6 +112,7 @@ void MainWindow::on_convertBtn_clicked()
     delete this->hdrCap;
 
     ui->convertBtn->setEnabled(true);
+    ui->actionOpen->setEnabled(true);
     ui->playPauseBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
     ui->saveBtn->setEnabled(false);
@@ -138,4 +140,40 @@ void MainWindow::on_stopBtn_clicked()
     this->STOP_BUTTON_WAS_PRESSED = true;
     this->SET_WATCH_EVERY_FRAME = true;
     ui->playPauseBtn->setText("Play");
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString fName = QFileDialog::getOpenFileName(this,
+            tr("Open video to convert"), "",
+            tr("Video file (*.avi);;All Files (*)"));
+    cout << "File name is: " << fName.toStdString() << endl;
+    if (fName.isEmpty()){
+        cout << "File is Empty!" << endl;
+
+        ui->TextStatus->setStyleSheet("QLabel { color : red; }");
+        std::string info = "File doesn't exist";
+        ui->TextStatus->setText(QString::fromStdString(info));
+
+        ui->convertBtn->setEnabled(false);
+
+        return;
+    }
+
+    VideoCapture* temp = new VideoCapture(fName.toStdString());
+    if(!temp->isOpened()) {
+        ui->TextStatus->setStyleSheet("QLabel { color : red; }");
+        std::string info = "File doesn't exist";
+        ui->TextStatus->setText(QString::fromStdString(info));
+
+        ui->convertBtn->setEnabled(false);
+    } else {
+        this->filename = fName.toStdString();
+        ui->TextStatus->setStyleSheet("QLabel { color : green; }");
+        std::string info = "File exists\nPATH: " + this->filename;
+        ui->TextStatus->setText(QString::fromStdString(info));
+
+        ui->convertBtn->setEnabled(true);
+    }
+    delete temp;
 }
