@@ -17,6 +17,7 @@
 #include <opencv2/photo.hpp>
 #include <opencv2/highgui/highgui_c.h>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include <QString>
 #include <string>
