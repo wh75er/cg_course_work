@@ -210,5 +210,5 @@ void MainWindow::on_moveCheckBox_stateChanged(int arg1)
 void MainWindow::on_saveBtn_clicked()
 {
     this->hdrVideo->saveVideo();
-    QMessageBox::information(this, QString("Information"), QString("Video has been saved."));
+    QMessageBox::information(this, QString("Information"), QString("Video has been saved to ../hdr_video.avi."));
 }
