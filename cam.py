@@ -2,14 +2,14 @@ import numpy as np
 import cv2
 import time
 
-filename = "video_street_240p.avi"
+filename = "video_uni.avi"
 frames_per_seconds = 30.0
 res240p = {'width':426, 'height':240}
 res360p = {'width':640, 'height':360}
 res480p = {'width':640, 'height':480}
 res720p = {'width':1280, 'height':720}
-width = res240p['width']
-height = res240p['height']
+width = res480p['width']
+height = res480p['height']
 
 cap = cv2.VideoCapture(0)
 out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), frames_per_seconds, 
@@ -24,10 +24,10 @@ exposureChanger = False
 
 while(True): 
     if exposureChanger:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.1)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.2)                 #   Brighter
         exposureChanger = False
     else:
-        cap.set(cv2.CAP_PROP_EXPOSURE, 0.009)
+        cap.set(cv2.CAP_PROP_EXPOSURE, 0.009)               #   Darker
         exposureChanger = True
 
     #time.sleep(.100)
